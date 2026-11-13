@@ -1,21 +1,22 @@
 # LinguaFlow 🌍
 
-> Extensão para Google Chrome voltada ao aprendizado de idiomas, com tradução contextual, leitura, pronúncia, vocabulário e, futuramente, um tutor de inteligência artificial executado localmente com WebGPU.
+> Extensão para Google Chrome voltada ao aprendizado de idiomas, com tradução contextual, leitura, pronúncia, vocabulário, flashcards e futuramente um tutor de inteligência artificial executado localmente com WebGPU.
 
 **Status:** Em desenvolvimento  
 **Plataforma:** Google Chrome — Manifest V3  
+**Interface principal:** Side Panel  
 **Idioma nativo:** Português (Brasil)  
 **Idiomas de aprendizado:** Alemão, Inglês, Francês, Italiano e Espanhol.
 
 ---
 
-## 1. Visão do projeto
+# 1. Visão geral
 
 O LinguaFlow será uma extensão de aprendizado de idiomas que permitirá ao usuário estudar enquanto navega pela internet.
 
 A proposta é integrar ferramentas de tradução e aprendizado diretamente ao navegador, evitando depender de serviços externos pagos ou de um servidor próprio.
 
-### Objetivos principais
+## Objetivos principais
 
 - [ ] Traduzir textos selecionados em páginas da internet.
 - [ ] Traduzir textos inseridos manualmente.
@@ -28,7 +29,7 @@ A proposta é integrar ferramentas de tradução e aprendizado diretamente ao na
 - [ ] Acompanhar o progresso de aprendizado.
 - [ ] Desenvolver futuramente um tutor de conversação com IA local.
 
-### Princípios técnicos
+## Princípios técnicos
 
 - Não depender de backend próprio.
 - Priorizar processamento local.
@@ -40,9 +41,9 @@ A proposta é integrar ferramentas de tradução e aprendizado diretamente ao na
 
 ---
 
-## 2. Tecnologias
+# 2. Stack tecnológica
 
-### Base da aplicação
+## Base da aplicação
 
 | Tecnologia | Responsabilidade |
 |---|---|
@@ -50,10 +51,11 @@ A proposta é integrar ferramentas de tradução e aprendizado diretamente ao na
 | TypeScript | Tipagem e segurança |
 | Vite | Build e desenvolvimento |
 | CRXJS | Integração com Chrome Extensions |
+| React Router DOM | Navegação entre páginas |
 | Tailwind CSS | Estilização |
 | Chrome Extension API | Recursos do navegador |
 
-### Armazenamento
+## Armazenamento
 
 | Tecnologia | Responsabilidade |
 |---|---|
@@ -61,7 +63,7 @@ A proposta é integrar ferramentas de tradução e aprendizado diretamente ao na
 | chrome.storage.sync | Pequenas configurações sincronizáveis |
 | IndexedDB | Vocabulário, histórico, progresso e dados maiores |
 
-### Tecnologias planejadas para IA
+## Tecnologias planejadas para IA
 
 | Tecnologia | Responsabilidade |
 |---|---|
@@ -73,13 +75,11 @@ A proposta é integrar ferramentas de tradução e aprendizado diretamente ao na
 | SpeechSynthesis | Reprodução de pronúncia |
 | Whisper / Transformers.js | Possível reconhecimento de fala |
 
-*As tecnologias de IA serão avaliadas e integradas somente nas etapas futuras.*
-
 ---
 
-# 3. Estrutura do projeto
+# 3. Organização do projeto
 
-Estrutura planejada para a aplicação. Ela poderá ser ajustada conforme as necessidades reais do desenvolvimento.
+Estrutura planejada. Ela poderá ser ajustada conforme o template gerado pelo CRXJS e as necessidades reais do desenvolvimento.
 
 ```text
 lingua-flow/
@@ -92,15 +92,15 @@ lingua-flow/
 │   │
 │   ├── app/
 │   │   ├── App.tsx
-│   │   ├── routes/
+│   │   ├── router.tsx
+│   │   ├── layouts/
+│   │   │   └── MainLayout.tsx
 │   │   └── providers/
 │   │
 │   ├── sidepanel/
-│   │   ├── index.html
 │   │   └── main.tsx
 │   │
 │   ├── popup/
-│   │   ├── index.html
 │   │   └── main.tsx
 │   │
 │   ├── background/
@@ -118,10 +118,6 @@ lingua-flow/
 │   │
 │   ├── features/
 │   │   ├── translator/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   └── types/
-│   │   │
 │   │   ├── vocabulary/
 │   │   ├── flashcards/
 │   │   ├── history/
@@ -134,7 +130,6 @@ lingua-flow/
 │   │   ├── translation/
 │   │   │   ├── providers/
 │   │   │   └── translation.service.ts
-│   │   │
 │   │   ├── speech/
 │   │   ├── storage/
 │   │   └── ai/
@@ -151,6 +146,8 @@ lingua-flow/
 │   └── styles/
 │       └── global.css
 │
+├── public/
+├── sidepanel.html
 ├── manifest.config.ts
 ├── vite.config.ts
 ├── tsconfig.json
@@ -158,159 +155,437 @@ lingua-flow/
 └── README.md
 ```
 
-### Responsabilidade de cada área
+### Responsabilidade das pastas
 
-- `app/`: inicialização e organização da aplicação.
-- `sidepanel/`: interface principal da extensão.
-- `popup/`: acesso rápido às funcionalidades.
+- `app/`: inicialização, roteamento e organização da aplicação.
+- `sidepanel/`: ponto de entrada da interface principal.
+- `popup/`: possível interface de acesso rápido.
 - `background/`: eventos, mensagens e integrações com o navegador.
 - `content/`: interação com páginas visitadas pelo usuário.
 - `components/`: componentes reutilizáveis.
-- `features/`: funcionalidades independentes do LinguaFlow.
+- `features/`: funcionalidades independentes.
 - `services/`: regras de negócio e comunicação com provedores.
 - `workers/`: processamento pesado em segundo plano.
 - `shared/`: tipos, constantes e utilitários compartilhados.
 
 ---
 
-# 4. Roadmap de desenvolvimento
+# 4. Fase 1 — Configuração do projeto
 
-## Fase 1 — Preparação e configuração
+**Objetivo:** preparar o ambiente e conseguir executar o LinguaFlow como uma extensão real do Chrome.
 
-Objetivo: criar a base da extensão e preparar o ambiente.
+## 4.1 — Criação do projeto
 
-- [ ] Criar o projeto com React e TypeScript.
-- [ ] Configurar Vite.
-- [ ] Configurar CRXJS.
-- [ ] Configurar Manifest V3.
-- [ ] Instalar e configurar Tailwind CSS.
-- [ ] Criar a primeira estrutura de pastas.
-- [ ] Configurar os ícones da extensão.
-- [ ] Criar uma primeira tela de teste.
-- [ ] Executar o projeto localmente.
-- [ ] Carregar a extensão no Chrome através de `chrome://extensions`.
-- [ ] Verificar o funcionamento do Hot Reload.
-- [ ] Configurar ESLint e Prettier.
+- [x] Criar projeto utilizando CRXJS.
+- [x] Selecionar React.
+- [x] Selecionar TypeScript.
+- [x] Definir nome `lingua-flow`.
+- [x] Instalar dependências.
+- [x] Verificar execução inicial do Vite.
+- [x] Instalar React Router DOM.
+- [ ] Instalar Tailwind CSS.
+- [ ] Configurar ESLint.
+- [ ] Configurar Prettier.
 
-**Critério de conclusão:** extensão carregando corretamente no Chrome, com interface React funcionando.
+## 4.2 — Configurações da extensão
 
-## Fase 2 — Interface e experiência do usuário
+- [x] Entender a estrutura do Manifest V3.
+- [x] Configurar nome, descrição e versão.
+- [x] Configurar ícones da extensão.
+- [x] Configurar permissões necessárias.
+- [x] Configurar `side_panel`.
+- [x] Configurar página principal do Side Panel.
+- [x] Configurar Background Service Worker.
+- [x] Configurar abertura do Side Panel ao clicar no ícone.
+- [x] Configurar entradas do Vite para o Side Panel.
+- [x] Verificar compatibilidade entre Vite e CRXJS.
+- [x] Configurar o ambiente de desenvolvimento.
+- [x] Carregar a pasta `dist` em `chrome://extensions`.
+- [x] Testar atualizações automáticas durante o desenvolvimento.
 
-Objetivo: construir a experiência visual antes de integrar os mecanismos de tradução.
+## 4.3 — Testes iniciais
 
-- [ ] Definir identidade visual do LinguaFlow.
-- [ ] Criar layout principal do Side Panel.
+- [x] Abrir o Side Panel pelo ícone da extensão.
+- [x] Verificar se a interface carrega corretamente.
+- [x] Verificar se o React está funcionando.
+- [ ] Verificar se o Tailwind está funcionando.
+- [x] Verificar o funcionamento do Hot Reload.
+- [x] Testar console e inspeção de erros.
+- [x] Testar recarga da extensão.
+
+**Critério de conclusão:** extensão carregando corretamente no Chrome, com React funcionando dentro do Side Panel.
+
+---
+
+# 5. Fase 2 — Arquitetura e navegação
+
+**Objetivo:** organizar a aplicação antes de implementar suas funcionalidades.
+
+## 5.1 — Estrutura
+
+- [ ] Criar pastas `app`, `features`, `components`, `services` e `shared`.
+- [ ] Criar estrutura inicial das funcionalidades.
+- [ ] Separar componentes visuais das regras de negócio.
+- [ ] Criar arquivo central de tipos compartilhados.
+- [ ] Definir convenções de nomenclatura.
+- [ ] Definir organização dos imports.
+
+## 5.2 — React Router
+
+- [ ] Configurar React Router DOM.
+- [ ] Implementar `createHashRouter`.
+- [ ] Criar `MainLayout`.
+- [ ] Criar navegação lateral ou inferior.
+- [ ] Criar `Outlet` para renderização das páginas.
+- [ ] Implementar `NavLink` para navegação.
+- [ ] Criar rotas das funcionalidades.
+- [ ] Criar rota de página não encontrada.
+- [ ] Testar navegação sem recarregar a extensão.
+
+### Rotas planejadas
+
+| Rota | Página |
+|---|---|
+| `/` | Tradutor |
+| `/vocabulary` | Vocabulário |
+| `/flashcards` | Flashcards |
+| `/history` | Histórico |
+| `/progress` | Progresso |
+| `/tutor` | Tutor IA |
+| `/settings` | Configurações |
+
+**Critério de conclusão:** todas as páginas acessíveis pelo menu, utilizando um layout compartilhado.
+
+---
+
+# 6. Fase 3 — Frontend e experiência visual
+
+**Objetivo:** construir toda a interface antes de implementar as regras de negócio.
+
+## 6.1 — Design System
+
+- [ ] Definir identidade visual.
+- [ ] Definir paleta de cores.
+- [ ] Definir tipografia.
+- [ ] Definir espaçamentos.
+- [ ] Definir bordas e arredondamentos.
+- [ ] Criar componentes de botão.
+- [ ] Criar componentes de input.
+- [ ] Criar componentes de seleção.
+- [ ] Criar componentes de modal.
+- [ ] Criar componentes de tooltip.
+- [ ] Criar componentes de carregamento.
+- [ ] Criar componentes de feedback e notificações.
+- [ ] Implementar tema claro.
+- [ ] Implementar tema escuro.
+- [ ] Implementar responsividade para diferentes larguras do Side Panel.
+
+## 6.2 — Layout principal
+
+- [ ] Criar cabeçalho.
+- [ ] Criar navegação principal.
+- [ ] Criar área de conteúdo.
 - [ ] Criar navegação entre funcionalidades.
+- [ ] Criar identificação visual da página atual.
+- [ ] Criar área de configurações rápidas, se necessário.
+
+## 6.3 — Telas
+
+### Tradutor
+
 - [ ] Criar seletor de idioma de origem.
 - [ ] Criar seletor de idioma de destino.
-- [ ] Criar tela de tradução.
-- [ ] Criar área de texto de entrada.
-- [ ] Criar área de resultado.
 - [ ] Criar botão para inverter idiomas.
-- [ ] Criar tela de vocabulário.
-- [ ] Criar tela de histórico.
-- [ ] Criar tela de flashcards.
-- [ ] Criar tela de progresso.
-- [ ] Criar tela de configurações.
-- [ ] Implementar tema claro e escuro.
-- [ ] Implementar estados de carregamento, erro e vazio.
-- [ ] Tornar a interface responsiva ao espaço disponível no Side Panel.
+- [ ] Criar campo de texto de entrada.
+- [ ] Criar área de resultado.
+- [ ] Criar botão de tradução.
+- [ ] Criar botão para copiar resultado.
+- [ ] Criar botão de pronúncia.
+- [ ] Criar botão para salvar palavra ou frase.
+- [ ] Criar estados de carregamento e erro.
 
-**Critério de conclusão:** todas as telas principais funcionando com dados fictícios, sem depender ainda de tradução real.
+### Vocabulário
 
-## Fase 3 — Funcionalidades da extensão Chrome
+- [ ] Criar listagem de palavras.
+- [ ] Criar campo de pesquisa.
+- [ ] Criar filtros por idioma.
+- [ ] Criar visualização detalhada.
+- [ ] Criar formulário de edição.
+- [ ] Criar opção de exclusão.
 
-Objetivo: conectar a interface com o navegador.
+### Flashcards
 
+- [ ] Criar componente de cartão.
+- [ ] Criar animação de inversão.
+- [ ] Criar botões de avaliação.
+- [ ] Criar tela de sessão de revisão.
+- [ ] Criar indicador de progresso.
+
+### Histórico
+
+- [ ] Criar listagem de traduções.
+- [ ] Criar pesquisa.
+- [ ] Criar filtros.
+- [ ] Criar visualização de detalhes.
+
+### Progresso
+
+- [ ] Criar indicadores de palavras aprendidas.
+- [ ] Criar gráficos de evolução.
+- [ ] Criar estatísticas de revisão.
+- [ ] Criar indicadores de frequência de estudo.
+
+### Tutor IA
+
+- [ ] Criar interface de chat.
+- [ ] Criar área de mensagens.
+- [ ] Criar campo de entrada.
+- [ ] Criar botão de envio.
+- [ ] Criar indicadores de processamento.
+- [ ] Criar visualização de correções.
+- [ ] Criar seletor de idioma e nível.
+
+### Configurações
+
+- [ ] Criar seleção de idioma nativo.
+- [ ] Criar seleção de idiomas de aprendizado.
+- [ ] Criar configurações de pronúncia.
+- [ ] Criar configurações de aparência.
+- [ ] Criar gerenciamento de modelos futuramente.
+
+**Critério de conclusão:** todas as telas principais construídas e navegáveis, inicialmente com dados fictícios.
+
+---
+
+# 7. Fase 4 — Lógica e arquitetura de dados
+
+**Objetivo:** implementar as regras de negócio que dão funcionamento à interface.
+
+## 7.1 — Tipos e modelos
+
+- [ ] Criar tipo `Language`.
+- [ ] Criar tipo `Translation`.
+- [ ] Criar tipo `VocabularyEntry`.
+- [ ] Criar tipo `Flashcard`.
+- [ ] Criar tipo `TranslationHistory`.
+- [ ] Criar tipo `UserProgress`.
+- [ ] Criar tipo `AppSettings`.
+- [ ] Definir relacionamentos entre os dados.
+- [ ] Definir identificadores únicos.
+- [ ] Definir datas de criação e atualização.
+
+## 7.2 — Armazenamento local
+
+- [ ] Estudar Chrome Storage API.
+- [ ] Estudar IndexedDB.
+- [ ] Definir quais dados ficam em cada armazenamento.
+- [ ] Criar serviço de configurações.
+- [ ] Criar serviço de vocabulário.
+- [ ] Criar serviço de histórico.
+- [ ] Criar serviço de flashcards.
+- [ ] Criar serviço de progresso.
+- [ ] Implementar operações CRUD.
+- [ ] Implementar validação dos dados.
+- [ ] Implementar tratamento de erros.
+- [ ] Testar persistência após fechar o Chrome.
+
+## 7.3 — Integração entre frontend e lógica
+
+- [ ] Conectar formulário do tradutor ao serviço de tradução.
+- [ ] Conectar vocabulário ao armazenamento.
+- [ ] Conectar histórico ao armazenamento.
+- [ ] Conectar flashcards aos dados salvos.
+- [ ] Conectar gráficos às estatísticas.
+- [ ] Implementar estados de carregamento.
+- [ ] Implementar tratamento de erros.
+- [ ] Evitar duplicação de regras de negócio nos componentes.
+
+**Critério de conclusão:** funcionalidades principais operando com dados persistentes, mesmo antes da integração com modelos de IA.
+
+---
+
+# 8. Fase 5 — Integração com Chrome
+
+**Objetivo:** permitir que o LinguaFlow interaja com as páginas visitadas.
+
+## 8.1 — Comunicação interna
+
+- [ ] Estudar mensagens da Chrome Runtime API.
 - [ ] Implementar comunicação entre Side Panel e Background.
 - [ ] Implementar comunicação entre Content Script e Background.
-- [ ] Capturar texto selecionado em páginas.
-- [ ] Criar menu de contexto para traduzir texto selecionado.
+- [ ] Definir padrões de mensagens.
+- [ ] Criar tipos para mensagens.
+- [ ] Implementar tratamento de falhas de comunicação.
+
+## 8.2 — Seleção de texto
+
+- [ ] Criar Content Script.
+- [ ] Capturar texto selecionado.
+- [ ] Criar menu de contexto.
+- [ ] Implementar ação de tradução no menu.
 - [ ] Enviar texto selecionado para o Side Panel.
-- [ ] Implementar leitura de conteúdo de páginas.
-- [ ] Definir permissões mínimas necessárias no Manifest.
-- [ ] Tratar páginas nas quais a extensão não pode executar Content Scripts.
+- [ ] Exibir texto recebido na interface.
+- [ ] Tratar seleção vazia.
 - [ ] Testar em diferentes sites.
 
-**Critério de conclusão:** conseguir selecionar um texto em qualquer página compatível e enviá-lo para a extensão.
+## 8.3 — Leitura de páginas
 
-## Fase 4 — Sistema de tradução
+- [ ] Implementar captura do conteúdo textual.
+- [ ] Filtrar elementos desnecessários.
+- [ ] Evitar capturar campos de senha ou dados sensíveis.
+- [ ] Criar opção para ler página inteira.
+- [ ] Criar opção para ler apenas trecho selecionado.
+- [ ] Implementar comunicação com a interface.
+- [ ] Tratar páginas incompatíveis.
 
-Objetivo: desenvolver a primeira funcionalidade realmente útil do LinguaFlow.
+**Critério de conclusão:** selecionar um texto em uma página e enviá-lo para o LinguaFlow.
 
-- [ ] Definir uma interface comum para provedores de tradução.
-- [ ] Implementar serviço de tradução.
-- [ ] Pesquisar modelos de tradução executáveis localmente.
-- [ ] Avaliar NLLB-200.
-- [ ] Avaliar TranslateGemma.
-- [ ] Avaliar outras alternativas compatíveis com navegador.
-- [ ] Testar traduções entre português e os cinco idiomas.
-- [ ] Testar traduções entre idiomas estrangeiros.
-- [ ] Comparar qualidade e velocidade.
-- [ ] Implementar identificação automática do idioma, se viável.
+---
+
+# 9. Fase 6 — Sistema de tradução
+
+**Objetivo:** implementar tradução real sem depender de backend próprio.
+
+## 9.1 — Arquitetura
+
+- [ ] Criar interface `TranslationProvider`.
+- [ ] Criar serviço central de tradução.
+- [ ] Separar interface dos provedores.
+- [ ] Implementar validação de idiomas.
+- [ ] Implementar identificação de idioma, se viável.
+- [ ] Implementar tratamento de textos muito grandes.
+- [ ] Implementar cache de traduções.
+
+Exemplo de contrato:
+
+```ts
+export interface TranslationProvider {
+  translate(
+    text: string,
+    source: string,
+    target: string
+  ): Promise<string>;
+}
+```
+
+## 9.2 — Pesquisa e testes de modelos
+
+- [ ] Estudar NLLB-200.
+- [ ] Estudar TranslateGemma.
+- [ ] Avaliar outras alternativas executáveis no navegador.
+- [ ] Verificar cobertura dos idiomas desejados.
+- [ ] Testar português para inglês.
+- [ ] Testar inglês para português.
+- [ ] Testar português para alemão.
+- [ ] Testar português para francês.
+- [ ] Testar português para italiano.
+- [ ] Testar português para espanhol.
+- [ ] Testar tradução entre idiomas estrangeiros.
+- [ ] Comparar qualidade.
+- [ ] Comparar velocidade.
+- [ ] Comparar consumo de memória.
+
+## 9.3 — Integração
+
+- [ ] Implementar primeiro provedor.
+- [ ] Integrar serviço com frontend.
 - [ ] Implementar tradução bidirecional.
-- [ ] Implementar tratamento de erros.
-- [ ] Criar cache de traduções quando apropriado.
-- [ ] Criar interface para carregamento e disponibilidade do modelo.
+- [ ] Integrar tradução de textos selecionados.
+- [ ] Integrar histórico.
+- [ ] Integrar salvamento no vocabulário.
+- [ ] Implementar feedback de processamento.
+- [ ] Implementar erros de carregamento e tradução.
 
-**Critério de conclusão:** traduzir textos reais sem depender de um backend próprio.
+**Critério de conclusão:** traduzir textos reais localmente nos idiomas suportados.
 
-## Fase 5 — Pronúncia e leitura
+---
 
-Objetivo: permitir que o usuário escute e pratique os idiomas.
+# 10. Fase 7 — Pronúncia e leitura
 
-- [ ] Integrar SpeechSynthesis.
-- [ ] Listar vozes disponíveis no navegador.
+**Objetivo:** permitir que o usuário escute e pratique os idiomas.
+
+- [ ] Estudar SpeechSynthesis API.
+- [ ] Listar vozes disponíveis.
 - [ ] Selecionar voz conforme o idioma.
 - [ ] Reproduzir palavras individualmente.
 - [ ] Reproduzir frases completas.
 - [ ] Implementar controle de velocidade.
 - [ ] Implementar pausa e retomada.
-- [ ] Criar leitura de textos selecionados.
-- [ ] Avaliar alternativas locais de reconhecimento de fala.
-- [ ] Testar disponibilidade e qualidade das vozes nos diferentes idiomas.
+- [ ] Integrar pronúncia ao tradutor.
+- [ ] Integrar pronúncia ao vocabulário.
+- [ ] Integrar pronúncia aos flashcards.
+- [ ] Implementar leitura de textos selecionados.
+- [ ] Testar disponibilidade e qualidade das vozes.
 
-**Critério de conclusão:** conseguir ouvir palavras e frases com a voz correspondente ao idioma selecionado.
+**Critério de conclusão:** reproduzir palavras e frases com uma voz adequada ao idioma selecionado.
 
-## Fase 6 — Vocabulário, histórico e flashcards
+---
 
-Objetivo: transformar traduções em material de estudo.
+# 11. Fase 8 — Vocabulário, histórico e aprendizado
 
-- [ ] Definir estrutura dos dados de vocabulário.
-- [ ] Implementar armazenamento com IndexedDB.
+**Objetivo:** transformar traduções em material de estudo.
+
+## 11.1 — Vocabulário
+
 - [ ] Salvar palavras e expressões.
-- [ ] Salvar tradução e idioma de origem.
+- [ ] Salvar tradução.
+- [ ] Salvar idioma de origem e destino.
 - [ ] Permitir adicionar observações.
-- [ ] Permitir editar palavras salvas.
+- [ ] Permitir editar palavras.
 - [ ] Permitir excluir palavras.
-- [ ] Implementar histórico de traduções.
-- [ ] Permitir pesquisar no histórico.
-- [ ] Criar sistema de flashcards.
-- [ ] Implementar revisão de palavras.
+- [ ] Pesquisar palavras.
+- [ ] Filtrar por idioma.
+
+## 11.2 — Flashcards
+
+- [ ] Criar sistema de revisão.
+- [ ] Exibir palavra e tradução.
+- [ ] Implementar inversão do cartão.
 - [ ] Registrar acertos e erros.
-- [ ] Criar sistema básico de repetição espaçada.
-- [ ] Implementar estatísticas de aprendizado.
+- [ ] Criar sistema de repetição espaçada.
+- [ ] Definir intervalo de revisão.
+- [ ] Priorizar palavras com maior dificuldade.
+- [ ] Registrar sessões de estudo.
 
-**Critério de conclusão:** o usuário consegue criar seu próprio vocabulário e revisar palavras sem perder os dados ao fechar o navegador.
+## 11.3 — Histórico
 
-## Fase 7 — Inteligência Artificial e WebGPU
+- [ ] Salvar traduções realizadas.
+- [ ] Pesquisar traduções antigas.
+- [ ] Filtrar por idioma.
+- [ ] Permitir excluir registros.
+- [ ] Permitir transformar tradução em vocabulário.
 
-Objetivo: desenvolver um tutor de idiomas executado localmente, sem depender de uma API de IA externa.
+## 11.4 — Progresso
 
-### 7.1 — Estudo e validação técnica
+- [ ] Contabilizar palavras aprendidas.
+- [ ] Contabilizar revisões.
+- [ ] Registrar frequência de estudo.
+- [ ] Criar gráficos de evolução.
+- [ ] Criar indicadores de desempenho.
+
+**Critério de conclusão:** o usuário consegue organizar, revisar e acompanhar seu aprendizado.
+
+---
+
+# 12. Fase 9 — Inteligência Artificial e WebGPU
+
+**Objetivo:** desenvolver um tutor de idiomas executado localmente, sem depender de uma API externa.
+
+## 12.1 — Estudo e validação técnica
 
 - [ ] Estudar funcionamento do WebGPU.
 - [ ] Verificar disponibilidade de `navigator.gpu`.
 - [ ] Testar WebGPU no Chrome.
-- [ ] Verificar compatibilidade com a GPU e os drivers.
-- [ ] Testar execução de operações básicas na GPU.
+- [ ] Verificar compatibilidade com GPU e drivers.
+- [ ] Testar operações básicas na GPU.
 - [ ] Estudar Web Workers.
 - [ ] Estudar inferência local no navegador.
 - [ ] Comparar WebLLM e Transformers.js.
 - [ ] Avaliar consumo de RAM e VRAM.
 - [ ] Medir velocidade de inferência.
+- [ ] Avaliar alternativas de execução em WASM.
 
-### 7.2 — Gerenciamento de modelos
+## 12.2 — Gerenciamento de modelos
 
 - [ ] Criar sistema de seleção de modelos.
 - [ ] Criar interface de download.
@@ -318,31 +593,34 @@ Objetivo: desenvolver um tutor de idiomas executado localmente, sem depender de 
 - [ ] Armazenar modelos em cache.
 - [ ] Detectar modelos já baixados.
 - [ ] Permitir excluir modelos.
-- [ ] Exibir informações de espaço ocupado.
+- [ ] Exibir espaço ocupado.
 - [ ] Implementar carregamento e descarregamento.
-- [ ] Tratar falhas de memória e incompatibilidade.
-- [ ] Implementar alternativa de execução em WASM quando viável.
+- [ ] Tratar incompatibilidade de hardware.
+- [ ] Tratar falta de memória.
+- [ ] Implementar fallback quando viável.
 
-### 7.3 — Tutor inteligente
+## 12.3 — Tutor inteligente
 
-- [ ] Criar interface de conversação.
+- [ ] Criar interface de conversação funcional.
 - [ ] Definir níveis de dificuldade.
-- [ ] Permitir escolher o idioma da conversa.
+- [ ] Permitir escolher idioma da conversa.
 - [ ] Implementar contexto de conversação.
 - [ ] Criar instruções para o tutor atuar como professor.
-- [ ] Implementar correção de erros gramaticais.
-- [ ] Explicar os erros na língua nativa.
+- [ ] Implementar correção gramatical.
+- [ ] Explicar erros na língua nativa.
 - [ ] Sugerir formas mais naturais de expressão.
 - [ ] Criar exercícios a partir das conversas.
-- [ ] Integrar o vocabulário salvo ao tutor.
-- [ ] Permitir simulações de situações cotidianas.
+- [ ] Integrar vocabulário salvo ao tutor.
+- [ ] Criar simulações de situações cotidianas.
 - [ ] Salvar conversas localmente.
 
-**Critério de conclusão:** conversar com um tutor de IA no navegador, com geração de respostas local e sem API externa.
+**Critério de conclusão:** conversar com um tutor de IA no navegador, com geração de respostas local.
 
-## Fase 8 — Reconhecimento de fala
+---
 
-Objetivo: permitir que o usuário pratique conversação também por voz.
+# 13. Fase 10 — Reconhecimento de fala
+
+**Objetivo:** permitir que o usuário pratique conversação também por voz.
 
 - [ ] Pesquisar modelos locais de reconhecimento de fala.
 - [ ] Avaliar Whisper com Transformers.js.
@@ -350,24 +628,42 @@ Objetivo: permitir que o usuário pratique conversação também por voz.
 - [ ] Implementar captura de áudio mediante permissão.
 - [ ] Converter áudio em texto.
 - [ ] Integrar texto reconhecido ao tutor.
-- [ ] Comparar fala reconhecida com a frase esperada.
+- [ ] Comparar fala reconhecida com frase esperada.
 - [ ] Avaliar feedback de pronúncia.
 - [ ] Tratar permissões e erros de microfone.
 
 **Critério de conclusão:** usuário consegue falar com o tutor e receber respostas e correções.
 
-## Fase 9 — Testes, otimização e publicação
+---
 
-Objetivo: preparar o LinguaFlow para uso real e publicação.
+# 14. Fase 11 — Testes, otimização e publicação
+
+**Objetivo:** preparar o LinguaFlow para uso real e publicação.
+
+## 14.1 — Testes
 
 - [ ] Testar funcionalidades individualmente.
+- [ ] Testar componentes React.
+- [ ] Testar serviços e regras de negócio.
 - [ ] Testar comunicação entre os componentes da extensão.
 - [ ] Testar persistência dos dados.
 - [ ] Testar funcionamento após reiniciar o Chrome.
 - [ ] Testar funcionamento offline quando os recursos estiverem disponíveis localmente.
+- [ ] Testar diferentes larguras do Side Panel.
+- [ ] Testar erros de carregamento dos modelos.
+
+## 14.2 — Otimização
+
 - [ ] Otimizar consumo de memória.
 - [ ] Otimizar carregamento dos modelos.
-- [ ] Verificar permissões solicitadas.
+- [ ] Evitar renderizações desnecessárias.
+- [ ] Implementar carregamento sob demanda.
+- [ ] Otimizar armazenamento local.
+- [ ] Verificar compatibilidade com diferentes máquinas.
+
+## 14.3 — Publicação
+
+- [ ] Revisar permissões solicitadas.
 - [ ] Revisar privacidade e segurança.
 - [ ] Verificar políticas da Chrome Web Store.
 - [ ] Criar página de apresentação.
@@ -381,45 +677,50 @@ Objetivo: preparar o LinguaFlow para uso real e publicação.
 
 ---
 
-# 5. Decisões arquiteturais importantes
+# 15. Decisões arquiteturais importantes
 
-### Sem backend próprio
+## Sem backend próprio
 
-O projeto deverá funcionar sem uma API hospedada por mim.
+O projeto deverá funcionar sem uma API hospedada pelo desenvolvedor.
 
 A extensão será responsável por executar as funcionalidades e armazenar os dados localmente.
 
-### Separação entre interface e mecanismos de IA
+## Separação entre frontend e lógica
 
-A interface não deve depender diretamente de uma biblioteca específica.
+Os componentes React devem cuidar principalmente da apresentação e interação com o usuário.
 
-Por exemplo, o sistema de tradução deve utilizar um contrato semelhante a:
+As regras de negócio devem ficar em serviços ou módulos próprios.
 
-```ts
-export interface TranslationProvider {
-  translate(
-    text: string,
-    source: string,
-    target: string
-  ): Promise<string>;
-}
+Exemplo:
+
+```text
+TranslatorPage
+      |
+      v
+translation.service.ts
+      |
+      v
+TranslationProvider
+      |
+      v
+Modelo de tradução
 ```
 
-Assim, será possível trocar NLLB por TranslateGemma ou outro modelo sem precisar reescrever a interface.
+Isso permite trocar o mecanismo de tradução sem reconstruir a interface.
 
-### IA local
+## IA local
 
 Os modelos poderão ser baixados sob demanda e armazenados em cache.
 
 O processamento será feito no dispositivo do usuário. O primeiro download exigirá internet, e o funcionamento posterior dependerá da disponibilidade dos arquivos em cache.
 
-### Processamento em segundo plano
+## Processamento em segundo plano
 
 Modelos de IA não devem bloquear a interface.
 
 Sempre que necessário, utilizar Web Workers para executar operações pesadas.
 
-### Privacidade
+## Privacidade
 
 - Não coletar textos de páginas sem uma ação ou permissão adequada do usuário.
 - Não enviar conversas ou traduções para servidores externos sem consentimento.
@@ -428,7 +729,7 @@ Sempre que necessário, utilizar Web Workers para executar operações pesadas.
 
 ---
 
-# 6. Idiomas suportados
+# 16. Idiomas suportados
 
 | Idioma | Código |
 |---|---|
@@ -443,47 +744,73 @@ A implementação deverá considerar que nem todos os modelos suportam todos os 
 
 ---
 
-# 7. Registro de progresso
+# 17. Acompanhamento geral
 
-Use esta seção para registrar o andamento geral do projeto.
+Atualize os status conforme avançar.
 
 | Fase | Status |
 |---|---|
-| 1. Preparação | ⬜ Não iniciado |
-| 2. Interface | ⬜ Não iniciado |
-| 3. Chrome API | ⬜ Não iniciado |
-| 4. Tradução | ⬜ Não iniciado |
-| 5. Pronúncia | ⬜ Não iniciado |
-| 6. Vocabulário | ⬜ Não iniciado |
-| 7. IA e WebGPU | ⬜ Não iniciado |
-| 8. Reconhecimento de fala | ⬜ Não iniciado |
-| 9. Publicação | ⬜ Não iniciado |
+| 1. Configuração | ⬜ Não iniciado |
+| 2. Arquitetura e navegação | ⬜ Não iniciado |
+| 3. Frontend | ⬜ Não iniciado |
+| 4. Lógica e dados | ⬜ Não iniciado |
+| 5. Integração Chrome | ⬜ Não iniciado |
+| 6. Tradução | ⬜ Não iniciado |
+| 7. Pronúncia | ⬜ Não iniciado |
+| 8. Vocabulário e aprendizado | ⬜ Não iniciado |
+| 9. IA e WebGPU | ⬜ Não iniciado |
+| 10. Reconhecimento de fala | ⬜ Não iniciado |
+| 11. Testes e publicação | ⬜ Não iniciado |
 
-## Registro de decisões e problemas
+Legenda:
 
-Utilize esta área para documentar decisões técnicas importantes, problemas encontrados e soluções implementadas.
+- ⬜ Não iniciado
+- 🟡 Em andamento
+- 🟢 Concluído
+- 🔴 Bloqueado
 
-### Decisões
+---
+
+# 18. Registro de desenvolvimento
+
+Utilize esta seção para documentar decisões técnicas, problemas encontrados e soluções implementadas.
+
+## Decisões técnicas
 
 - 
 
-### Problemas encontrados
+## Problemas encontrados
 
 - 
 
-### Próximas tarefas
+## Soluções implementadas
+
+- 
+
+## Próximas tarefas
+
+- 
+
+## Alterações futuras de arquitetura
 
 - 
 
 ---
 
-# 8. Referências técnicas
+# 19. Referências técnicas
+
+### Desenvolvimento
 
 - [Chrome Extensions Documentation](https://developer.chrome.com/docs/extensions/)
 - [CRXJS](https://crxjs.dev/)
 - [React](https://react.dev/)
+- [React Router](https://reactrouter.com/)
 - [TypeScript](https://www.typescriptlang.org/docs/)
 - [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+
+### IA e processamento local
+
 - [WebGPU Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API)
 - [WebLLM](https://github.com/mlc-ai/web-llm)
 - [Transformers.js](https://huggingface.co/docs/transformers.js/)
